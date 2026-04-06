@@ -1,0 +1,9 @@
+@import "tailwindcss";
+
+* {
+  @apply transition-colors duration-200;
+}
+
+body {
+  @apply bg-gradient-to-br from-slate-50 to-slate-100 min-h-screen;
+}
