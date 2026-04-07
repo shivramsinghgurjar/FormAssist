@@ -12,7 +12,7 @@ export const extractKeywords = async (req, res) => {
     }
 
     // Call AI service
-    const response = await axios.post("http://localhost:8000/extract", {
+    const response = await axios.post("https://formassist-1.onrender.com/extract", {
       text: text.trim(),
     });
 
