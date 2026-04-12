@@ -11,15 +11,20 @@ export const extractKeywords = async (req, res) => {
       });
     }
 
-    // Call AI service
-    const response = await axios.post("https://formassist-1.onrender.com/extract", {
-      text: text.trim(),
-    });
+    // Call AI service (FIXED BODY KEY)
+    const response = await axios.post(
+      "https://formassist-1.onrender.com/extract",
+      {
+        input: text.trim(), // ✅ FIXED (text → input)
+      }
+    );
 
-    // Return extracted data exactly as AI layer returns (avoid nested wrappers)
+    // Return extracted data exactly as AI layer returns
     return res.json(response.data);
+
   } catch (err) {
-    console.error("AI Service Error:", err.message);
+    // 🔥 FULL DEBUG LOG (VERY IMPORTANT)
+    console.error("AI ERROR FULL:", err.response?.data || err.message);
 
     // Check if AI service is unreachable
     if (err.code === "ECONNREFUSED" || err.code === "ENOTFOUND") {
@@ -29,10 +34,10 @@ export const extractKeywords = async (req, res) => {
       });
     }
 
-    // Return generic error
+    // Return actual backend error (not generic)
     return res.status(500).json({
       success: false,
-      error: err.response?.data?.error || "Failed to extract keywords",
+      error: err.response?.data || "Failed to extract keywords",
     });
   }
 };
