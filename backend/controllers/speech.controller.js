@@ -12,10 +12,10 @@ export const extractKeywords = async (req, res) => {
     }
 
     const response = await axios.post(
-      "https://formassist-1.onrender.com/extract",
+      "https://formassist-1.onrender.com/api/extract",
       {
         input: text.trim(), // ✅ FIXED KEY
-      }
+      },
     );
 
     // ✅ FORCE JSON RESPONSE
@@ -23,7 +23,6 @@ export const extractKeywords = async (req, res) => {
       success: true,
       data: response.data,
     });
-
   } catch (err) {
     console.error("AI ERROR FULL:", err.response?.data || err.message);
 
