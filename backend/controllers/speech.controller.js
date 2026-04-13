@@ -1,5 +1,7 @@
 import axios from "axios";
 
+const AI_SERVICE_URL = "https://formassist-1.onrender.com/extract";
+
 export const extractKeywords = async (req, res) => {
   try {
     const { text } = req.body;
@@ -11,24 +13,28 @@ export const extractKeywords = async (req, res) => {
       });
     }
 
-    const response = await axios.post(
-      "https://formassist-1.onrender.com/api/extract",
-      {
-        text: text.trim(),
-      },
-    );
+    const response = await axios.post(AI_SERVICE_URL, {
+      text: text.trim(),
+    });
 
-    // ✅ FORCE JSON RESPONSE
     return res.json({
       success: true,
       data: response.data,
     });
   } catch (err) {
-    console.error("AI ERROR FULL:", err.response?.data || err.message);
+    const status = err.response?.status || 500;
+    const errorPayload = err.response?.data || err.message || "AI service request failed";
 
-    return res.status(500).json({
+    console.error("AI SERVICE ERROR:", {
+      status,
+      url: AI_SERVICE_URL,
+      error: errorPayload,
+      stack: err.stack,
+    });
+
+    return res.status(status).json({
       success: false,
-      error: err.response?.data || "AI failed",
+      error: errorPayload,
     });
   }
 };
