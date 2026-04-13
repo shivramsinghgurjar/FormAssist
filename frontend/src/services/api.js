@@ -1,11 +1,13 @@
 import axios from "axios";
 
 const API = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || "http://localhost:5000/api"
+  baseURL: "https://formassist.onrender.com", // your backend
 });
 
-export const extractKeywords = (text) =>
-  API.post("/speech/extract", { text });
+export const extractData = async (text) => {
+  const res = await API.post("/extract", {
+    text: text, // matches backend
+  });
 
-export const saveForm = (data) =>
-  API.post("/form", data);
+  return res.data;
+};

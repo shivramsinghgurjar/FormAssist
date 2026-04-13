@@ -4,38 +4,32 @@ export const extractKeywords = async (req, res) => {
   try {
     const { text } = req.body;
 
-    if (!text || typeof text !== "string" || text.trim().length === 0) {
+    if (!text || typeof text !== "string") {
       return res.status(400).json({
         success: false,
-        error: "Text field is required and cannot be empty",
+        error: "Text is required",
       });
     }
 
-    // 🔥 TRY BOTH FORMATS (AUTO FIX)
-    let response;
+    const response = await axios.post(
+      "https://formassist-1.onrender.com/extract",
+      {
+        input: text.trim(), // ✅ FIXED KEY
+      }
+    );
 
-    try {
-      // Try with input
-      response = await axios.post(
-        "https://formassist-1.onrender.com/extract",
-        { input: text.trim() }
-      );
-    } catch (e) {
-      // Fallback to text
-      response = await axios.post(
-        "https://formassist-1.onrender.com/extract",
-        { text: text.trim() }
-      );
-    }
-
-    return res.json(response.data);
+    // ✅ FORCE JSON RESPONSE
+    return res.json({
+      success: true,
+      data: response.data,
+    });
 
   } catch (err) {
-    console.error("🔥 AI ERROR FULL:", err.response?.data || err.message);
+    console.error("AI ERROR FULL:", err.response?.data || err.message);
 
     return res.status(500).json({
       success: false,
-      error: err.response?.data || "Failed to extract keywords",
+      error: err.response?.data || "AI failed",
     });
   }
 };
