@@ -30,12 +30,7 @@ export default function Home() {
     try {
       const res = await extractKeywords(text);
       
-      const payload = res.data;
-      const extractedData =
-        payload?.data?.data || // backend wrapper + AI wrapper
-        payload?.data || // backend wrapper
-        payload ||
-        {};
+      const extractedData = res?.data || {};
 
       const normalizedData = {
         name: "",
@@ -48,20 +43,19 @@ export default function Home() {
         ...extractedData,
       };
 
-      console.log("Extracted data:", extractedData);
+      console.log("✅ Extracted data:", extractedData);
 
       if (Object.keys(extractedData).length > 0) {
         setFormData(normalizedData);
       } else {
-        setError("❌ No extractable fields found. Try a more precise grammar like: my name is ..., system id is ..., roll number is ..., etc.");
+        setError("⚠️ No extractable fields found. Try speaking: 'My name is [name], system ID is [ID], roll number is [number]...'");
       }
     } catch (err) {
-      console.error("Extract error:", err);
-      setError(
-        err.response?.data?.error || 
-        err.message || 
-        "❌ Failed to extract data. Make sure the AI module is running."
-      );
+      console.error("❌ Extract error:", err);
+      const errorMsg = err.response?.data?.error || 
+                       err.message || 
+                       "Failed to extract data. Make sure the AI service is running.";
+      setError("❌ " + errorMsg);
     } finally {
       setIsLoading(false);
     }

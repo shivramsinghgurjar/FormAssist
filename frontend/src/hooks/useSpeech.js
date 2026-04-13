@@ -4,6 +4,7 @@ export const useSpeech = () => {
   const [text, setText] = useState("");
   const [isListening, setIsListening] = useState(false);
   const recognitionRef = useRef(null);
+  const transcriptRef = useRef("");
 
   const startListening = () => {
     const SpeechRecognition =
@@ -20,15 +21,23 @@ export const useSpeech = () => {
 
     recognition.onstart = () => {
       setIsListening(true);
-      setText(""); // Clear previous text
+      transcriptRef.current = "";
     };
 
     recognition.onresult = (event) => {
-      let transcript = "";
-      for (let i = event.results.length - 1; i < event.results.length; i++) {
-        transcript += event.results[i][0].transcript;
+      let interimTranscript = "";
+      
+      for (let i = event.resultIndex; i < event.results.length; i++) {
+        const transcript = event.results[i][0].transcript;
+        
+        if (event.results[i].isFinal) {
+          transcriptRef.current += transcript + " ";
+        } else {
+          interimTranscript += transcript;
+        }
       }
-      setText(transcript);
+      
+      setText(transcriptRef.current + interimTranscript);
     };
 
     recognition.onerror = (event) => {
