@@ -14,7 +14,7 @@ export const extractKeywords = async (req, res) => {
     const response = await axios.post(
       "https://formassist-1.onrender.com/api/extract",
       {
-        input: text.trim(), // ✅ FIXED KEY
+        text: text.trim(),
       },
     );
 
