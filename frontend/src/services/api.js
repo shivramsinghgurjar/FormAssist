@@ -1,12 +1,18 @@
 import axios from "axios";
 
+// Development: use localhost backend
+// Production: use deployed Render backend
+const API_BASE_URL = process.env.NODE_ENV === "production" 
+  ? "https://formassist.onrender.com/api"
+  : "http://localhost:5000/api";
+
 const API = axios.create({
-  baseURL: "https://formassist.onrender.com/api", // correct
+  baseURL: API_BASE_URL,
 });
 
 // ✅ Extract Keywords
 export const extractKeywords = async (text) => {
-  const res = await API.post("/speech/extract", {  // 🔥 FIXED
+  const res = await API.post("/speech/extract", {
     text: text,
   });
 
