@@ -1,10 +1,9 @@
 import axios from "axios";
 
 const API = axios.create({
-  baseURL: "https://formassist.onrender.com", // your backend
+  baseURL: "https://formassist.onrender.com/api", // ✅ ADD /api
 });
 
-// ✅ Extract Keywords (AI)
 export const extractKeywords = async (text) => {
   const res = await API.post("/extract", {
     text: text,
